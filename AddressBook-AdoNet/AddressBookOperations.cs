@@ -84,7 +84,8 @@ namespace AddressBook_AdoNet
             }
             finally
             {
-                sqlConnection.Close();
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
             }
         }
 
@@ -127,6 +128,11 @@ namespace AddressBook_AdoNet
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+            finally
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
             }
         }
 
@@ -181,8 +187,19 @@ namespace AddressBook_AdoNet
                 throw new Exception(ex.Message);
 
             }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
             return false;
         }
+
+        /// <summary>
+        /// Get Contacts By City Or State
+        /// UC19
+        /// </summary>
+        /// <returns></returns>
         public bool GetContactsByCityOrState()
         {
             List<ContactDetails> ListOfContacts = new List<ContactDetails>();
@@ -239,11 +256,63 @@ namespace AddressBook_AdoNet
             }
             finally
             {
-                sqlConnection.Close();
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
             }
         }
-        
 
+        /// <summary>
+        /// Adding Contact Details In Database
+        /// UC20
+        /// </summary>
+        /// <param name="contactDetails"></param>
+        /// <returns></returns>
+        public bool AddingContactDetailsInDatabase(ContactDetails contactDetails)
+        {
+            SqlConnection connection = dBConnection.GetConnection();
+            try
+            {
+                using (connection)
+                {
+                    SqlCommand command = new SqlCommand("dbo.spInsertData", connection);
+                    ///changing command type to stored procedure
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@firstname", contactDetails.firstName);
+                    command.Parameters.AddWithValue("@lastname", contactDetails.lastName);
+                    command.Parameters.AddWithValue("@phonenumber", contactDetails.phoneNumber);
+                    command.Parameters.AddWithValue("@email", contactDetails.email);
+                    command.Parameters.AddWithValue("@addressBookName", contactDetails.addressBookName);
+                    command.Parameters.AddWithValue("@AddressBookId", contactDetails.addressBookId);
+                    command.Parameters.AddWithValue("@CompleteAddressId", contactDetails.completeAddressId);
+                    command.Parameters.AddWithValue("@start", contactDetails.start);
+                    command.Parameters.AddWithValue("@address", contactDetails.address);
+                    command.Parameters.AddWithValue("@city", contactDetails.city);
+                    command.Parameters.AddWithValue("@state", contactDetails.state);
+                    command.Parameters.AddWithValue("@zip", contactDetails.zip);
+                    command.Parameters.AddWithValue("@TypeId", contactDetails.typeId);
+                    command.Parameters.AddWithValue("@TypeName", contactDetails.typeName);
+                    ///opening connection
+                    connection.Open();
+                    int result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                    connection.Close();
+            }
+        }
     }
 }
 
