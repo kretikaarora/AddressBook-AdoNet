@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook-AdoNet", "AddressBook-AdoNet\AddressBook-AdoNet.csproj", "{B5B8BE59-FFD3-4E0C-A6B3-8563EBD0F903}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestProject1", "NUnitTestProject1\NUnitTestProject1.csproj", "{AC2BA4C3-F865-431B-80A9-051D53FDD253}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5B8BE59-FFD3-4E0C-A6B3-8563EBD0F903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B8BE59-FFD3-4E0C-A6B3-8563EBD0F903}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B8BE59-FFD3-4E0C-A6B3-8563EBD0F903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B8BE59-FFD3-4E0C-A6B3-8563EBD0F903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC2BA4C3-F865-431B-80A9-051D53FDD253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC2BA4C3-F865-431B-80A9-051D53FDD253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC2BA4C3-F865-431B-80A9-051D53FDD253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC2BA4C3-F865-431B-80A9-051D53FDD253}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBBF82C7-DD66-43FA-ABD3-B5908E43A6C5}
+	EndGlobalSection
+EndGlobal
