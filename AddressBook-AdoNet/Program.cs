@@ -6,6 +6,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 
 namespace AddressBook_AdoNet
 {
@@ -33,8 +34,9 @@ namespace AddressBook_AdoNet
             contactDetails.zip = 09865;
             contactDetails.typeId = 1;
             contactDetails.typeName = "Friends";
-            Console.WriteLine(addressBookOperations.AddingContactDetailsInDatabase(contactDetails) ? "Query Succesful for between DateRange " : "Failed");
-            //Console.WriteLine(addressBookOperations.GetContactsByCityOrState() ? "Query Succesful For Get by city " : "Failed");
+            List<ContactDetails> listOfContactsToBeAdded = new List<ContactDetails>();
+            listOfContactsToBeAdded.Add(contactDetails);
+            addressBookOperations.AddingMultipleContactDetailsUsingThreading(listOfContactsToBeAdded);
 
         }
     }
