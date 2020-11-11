@@ -38,6 +38,7 @@ namespace AddressBook_AdoNet
                 {
                     ///using stored procedure
                     SqlCommand command = new SqlCommand("spGetAllContacts", sqlConnection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
                     ///opening connection
                     sqlConnection.Open();                   
                     SqlDataReader dr = command.ExecuteReader();
@@ -84,6 +85,48 @@ namespace AddressBook_AdoNet
             {
                 sqlConnection.Close();
             }            
+        }
+
+        /// <summary>
+        /// Updating email and phonenumber using firstname lastname and addressbookname
+        /// UC17
+        /// </summary>
+        /// <param name="contactDetails"></param>
+        /// <returns></returns>
+        public bool UpdateAddressBookDetails(ContactDetails contactDetails)
+        {
+            ///getting Connection
+            SqlConnection sqlConnection = dBConnection.GetConnection();
+            try
+            {
+                ///checking if connection is established
+                using (sqlConnection)
+                {
+                    ///stored procedure
+                    SqlCommand command = new SqlCommand("spUpdateContactDetails", sqlConnection);
+                    ///changing command type to stored procedure
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    ///adding value using cmd
+                    command.Parameters.AddWithValue("@firstname", contactDetails.firstName);
+                    command.Parameters.AddWithValue("@lastname", contactDetails.lastName);                   
+                    command.Parameters.AddWithValue("@phonenumber", contactDetails.phoneNumber);
+                    command.Parameters.AddWithValue("@email", contactDetails.email);
+                    command.Parameters.AddWithValue("@addressBookName", contactDetails.addressBookName);
+                    sqlConnection.Open();
+                    int result = command.ExecuteNonQuery();
+                    sqlConnection.Close();
+                    ///checking if rows are being affected
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
