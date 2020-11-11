@@ -15,11 +15,13 @@ namespace AddressBook_AdoNet
         {
             Console.WriteLine("Welcome To Address Book AdoNet");
             AddressBookOperations addressBookOperations = new AddressBookOperations();
-            var list = addressBookOperations.GetAllContactDetails();
-            foreach(ContactDetails contactDetails in list)
-            {
-                Console.WriteLine(contactDetails.firstName,contactDetails.typeName,contactDetails.address);
-            }
+            ContactDetails contactDetails =  new ContactDetails();
+            contactDetails.firstName = "daisy";
+            contactDetails.lastName = "erison";
+            contactDetails.phoneNumber = 8111100011;
+            contactDetails.email = "eric@skype.com";
+            contactDetails.addressBookName = "First";
+            Console.WriteLine("bool value"+addressBookOperations.UpdateAddressBookDetails(contactDetails)); 
         }
     }
 }
