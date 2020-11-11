@@ -17,9 +17,8 @@ namespace AddressBook_AdoNet
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome To Address Book AdoNet");
-            AddressBookOperations addressBookOperations = new AddressBookOperations();           
-            Console.WriteLine(addressBookOperations.GetContactDetailsBetweenDateRange());
-            
+            AddressBookOperations addressBookOperations = new AddressBookOperations();         
+            Console.WriteLine(addressBookOperations.GetContactDetailsBetweenDateRange() ? "Query Succesful " : "Failed");
         }
     }
 }
