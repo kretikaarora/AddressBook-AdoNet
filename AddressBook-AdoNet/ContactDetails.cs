@@ -22,7 +22,7 @@ namespace AddressBook_AdoNet
         public string city { get; set; }
         public string state { get; set; }
         public int zip { get; set; }
-        public float phoneNumber { get; set; }
+        public double phoneNumber { get; set; }
         public string email { get; set; }
         public int addressBookId { get; set; }
         public int completeAddressId { get; set; }

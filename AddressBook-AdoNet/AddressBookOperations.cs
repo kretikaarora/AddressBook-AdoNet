@@ -27,7 +27,7 @@ namespace AddressBook_AdoNet
         /// UC16
         /// </summary>
         /// <returns></returns>
-        public List<ContactDetails> GetAllContactDetails()
+        public void GetAllContactDetails()
         {
             List<ContactDetails> ListOfContacts = new List<ContactDetails>();
             ///Getting connection
@@ -37,10 +37,10 @@ namespace AddressBook_AdoNet
                 using (sqlConnection)
                 {
                     ///using stored procedure
-                    SqlCommand command = new SqlCommand("spGetAllContacts", sqlConnection);
+                    SqlCommand command = new SqlCommand("dbo.spGetAllContacts", sqlConnection);
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     ///opening connection
-                    sqlConnection.Open();                   
+                    sqlConnection.Open();
                     SqlDataReader dr = command.ExecuteReader();
                     ///checking if rows are there
                     if (dr.HasRows)
@@ -49,42 +49,43 @@ namespace AddressBook_AdoNet
                         while (dr.Read())
                         {
                             ContactDetails contactDetails = new ContactDetails();
-                            contactDetails.firstName = dr.GetString(0);
-                            contactDetails.lastName = dr.GetString(1);
-                            contactDetails.address = dr.GetString(2);
-                            contactDetails.city = dr.GetString(3);
-                            contactDetails.state = dr.GetString(4);
-                            contactDetails.zip = dr.GetInt32(5);
-                            contactDetails.phoneNumber = dr.GetFloat(6);
-                            contactDetails.email = dr.GetString(7);
-                            contactDetails.addressBookId = dr.GetInt32(8);
-                            contactDetails.completeAddressId = dr.GetInt32(9);
-                            contactDetails.addressBookName = dr.GetString(10);
-                            contactDetails.typeId = dr.GetInt32(11);
-                            contactDetails.typeName = dr.GetString(12);
+                            contactDetails.firstName = Convert.ToString(dr["firstname"]);
+                            contactDetails.lastName = Convert.ToString(dr["lastname"]);
+                            contactDetails.address = Convert.ToString(dr["address"]);
+                            contactDetails.city = Convert.ToString(dr["city"]);
+                            contactDetails.state = Convert.ToString(dr["state"]);
+                            contactDetails.zip = Convert.ToInt32(dr["zip"]);
+                            contactDetails.phoneNumber = Convert.ToDouble(dr["phonenumber"]);
+                            contactDetails.email = Convert.ToString(dr["email"]);
+                            contactDetails.addressBookId = Convert.ToInt32(dr["AddressBookId"]);
+                            contactDetails.completeAddressId = Convert.ToInt32(dr["CompleteAddressId"]);
+                            contactDetails.addressBookName = Convert.ToString(dr["addressBookName"]);
+                            contactDetails.typeId = Convert.ToInt32(dr["TypeId"]);
+                            contactDetails.typeName = Convert.ToString(dr["TypeName"]);
+                            contactDetails.start = Convert.ToDateTime(dr["start"]);                           
                             ListOfContacts.Add(contactDetails);
                         }
                         ///closing reader and connection
                         dr.Close();
                         sqlConnection.Close();
-                        ///returning list 
-                        return ListOfContacts;
+                        //return true;
+
                     }
                     else
                     {
-                        throw new Exception("No data Found");                       
+                        throw new Exception("No data Found");
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return ListOfContacts;
+
             }
             finally
             {
                 sqlConnection.Close();
-            }            
+            }
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace AddressBook_AdoNet
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     ///adding value using cmd
                     command.Parameters.AddWithValue("@firstname", contactDetails.firstName);
-                    command.Parameters.AddWithValue("@lastname", contactDetails.lastName);                   
+                    command.Parameters.AddWithValue("@lastname", contactDetails.lastName);
                     command.Parameters.AddWithValue("@phonenumber", contactDetails.phoneNumber);
                     command.Parameters.AddWithValue("@email", contactDetails.email);
                     command.Parameters.AddWithValue("@addressBookName", contactDetails.addressBookName);
@@ -144,11 +145,11 @@ namespace AddressBook_AdoNet
                 using (connection)
                 {
                     ///query
-                    string query = "select * from address_book_table where dateadded between cast('2016-01-01' as date) and GETDATE()";
+                    string query = "select * from address_book_table where start between cast('2016-01-01' as date) and GETDATE()";
                     SqlCommand command = new SqlCommand(query, connection);
                     ///openning connection
                     connection.Open();
-                    SqlDataReader dr = command.ExecuteReader();  
+                    SqlDataReader dr = command.ExecuteReader();
                     ///checking if database hasrows 
                     if (dr.HasRows)
                     {
@@ -156,17 +157,17 @@ namespace AddressBook_AdoNet
                         {
                             ///reading
                             ContactDetails contactDetails = new ContactDetails();
-                            contactDetails.firstName = dr.GetString(0);
-                            contactDetails.lastName = dr.GetString(1);
-                            contactDetails.phoneNumber = dr.GetFloat(2);
-                            contactDetails.email = dr.GetString(3);
-                            contactDetails.addressBookName = dr.GetString(4);
-                            contactDetails.addressBookId = dr.GetInt32(5);
-                            contactDetails.completeAddressId = dr.GetInt32(6);
-                            contactDetails.start = dr.GetDateTime(7);                           
+                            contactDetails.firstName = Convert.ToString(dr["firstname"]);
+                            contactDetails.lastName = Convert.ToString(dr["lastname"]);                           
+                            contactDetails.phoneNumber = Convert.ToDouble(dr["phonenumber"]);
+                            contactDetails.email = Convert.ToString(dr["email"]);
+                            contactDetails.addressBookId = Convert.ToInt32(dr["AddressBookId"]);
+                            contactDetails.completeAddressId = Convert.ToInt32(dr["CompleteAddressId"]);
+                            contactDetails.addressBookName = Convert.ToString(dr["addressBookName"]);
+                            contactDetails.start = Convert.ToDateTime(dr["start"]);                          
                             dr.Close();
                             connection.Close();
-                            return true;                          
+                            return true;
                         }
                     }
                     else
@@ -178,9 +179,71 @@ namespace AddressBook_AdoNet
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-                
+
             }
             return false;
         }
+        public bool GetContactsByCityOrState()
+        {
+            List<ContactDetails> ListOfContacts = new List<ContactDetails>();
+            ///Getting connection
+            SqlConnection sqlConnection = dBConnection.GetConnection();
+            try
+            {
+                using (sqlConnection)
+                {
+                    ///using stored procedure
+                    string query = "select * from address_book_table a join complete_address c on a.CompleteAddressId=c.CompleteAddressId where c.city='delhi' ";
+                    SqlCommand command = new SqlCommand(query, sqlConnection);              
+                    ///opening connection
+                    sqlConnection.Open();
+                    SqlDataReader dr = command.ExecuteReader();
+                    ///checking if rows are there
+                    if (dr.HasRows)
+                    {
+                        ///reading till there are rows
+                        while (dr.Read())
+                        {
+                            ContactDetails contactDetails = new ContactDetails();
+                            contactDetails.firstName = Convert.ToString(dr["firstname"]);
+                            contactDetails.lastName = Convert.ToString(dr["lastname"]);
+                            contactDetails.address = Convert.ToString(dr["address"]);
+                            contactDetails.city = Convert.ToString(dr["city"]);
+                            contactDetails.state = Convert.ToString(dr["state"]);
+                            contactDetails.zip = Convert.ToInt32(dr["zip"]);
+                            contactDetails.phoneNumber = Convert.ToDouble(dr["phonenumber"]);
+                            contactDetails.email = Convert.ToString(dr["email"]);
+                            contactDetails.addressBookId = Convert.ToInt32(dr["AddressBookId"]);
+                            contactDetails.completeAddressId = Convert.ToInt32(dr["CompleteAddressId"]);
+                            contactDetails.addressBookName = Convert.ToString(dr["addressBookName"]);                   
+                            contactDetails.start = Convert.ToDateTime(dr["start"]);
+                            ListOfContacts.Add(contactDetails);                           
+                        }
+                        ///closing reader and connection
+                        dr.Close();
+                        sqlConnection.Close();
+                        return true;
+
+                    }
+                    else
+                    {
+                        throw new Exception("No data Found");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+        
+
     }
 }
+
