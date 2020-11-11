@@ -103,7 +103,7 @@ namespace AddressBook_AdoNet
                 using (sqlConnection)
                 {
                     ///stored procedure
-                    SqlCommand command = new SqlCommand("spUpdateContactDetails", sqlConnection);
+                    SqlCommand command = new SqlCommand("dbo.spUpdateContactDetails", sqlConnection);
                     ///changing command type to stored procedure
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     ///adding value using cmd
@@ -127,6 +127,60 @@ namespace AddressBook_AdoNet
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Get Contact Details Between DateRange
+        /// UC18
+        /// </summary>
+        /// <returns></returns>
+        public bool GetContactDetailsBetweenDateRange()
+        {
+            ///Getting Connection
+            SqlConnection connection = dBConnection.GetConnection();
+            try
+            {
+                ///checking if connection is established
+                using (connection)
+                {
+                    ///query
+                    string query = "select * from address_book_table where dateadded between cast('2016-01-01' as date) and GETDATE()";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    ///openning connection
+                    connection.Open();
+                    SqlDataReader dr = command.ExecuteReader();  
+                    ///checking if database hasrows 
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            ///reading
+                            ContactDetails contactDetails = new ContactDetails();
+                            contactDetails.firstName = dr.GetString(0);
+                            contactDetails.lastName = dr.GetString(1);
+                            contactDetails.phoneNumber = dr.GetFloat(2);
+                            contactDetails.email = dr.GetString(3);
+                            contactDetails.addressBookName = dr.GetString(4);
+                            contactDetails.addressBookId = dr.GetInt32(5);
+                            contactDetails.completeAddressId = dr.GetInt32(6);
+                            contactDetails.start = dr.GetDateTime(7);                           
+                            dr.Close();
+                            connection.Close();
+                            return true;                          
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("No data found ");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+                
+            }
+            return false;
         }
     }
 }

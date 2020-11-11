@@ -29,5 +29,7 @@ namespace AddressBook_AdoNet
         public string addressBookName { get; set; }
         public int typeId { get; set; }
         public string typeName { get; set; }
+
+        public DateTime start { get; set; }
     }
 }
